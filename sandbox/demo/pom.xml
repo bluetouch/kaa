@@ -50,14 +50,17 @@
         <dependency>
             <groupId>org.kaaproject.kaa.server.verifiers.facebook</groupId>
             <artifactId>config</artifactId>
+            <classifier>facebook</classifier>
         </dependency>
         <dependency>
             <groupId>org.kaaproject.kaa.server.verifiers.twitter</groupId>
             <artifactId>config</artifactId>
+            <classifier>twitter</classifier>
         </dependency>
         <dependency>
             <groupId>org.kaaproject.kaa.server.verifiers.gplus</groupId>
             <artifactId>config</artifactId>
+            <classifier>gplus</classifier>
         </dependency>
         <dependency>
             <groupId>org.kaaproject.kaa.examples.robotrun</groupId>
