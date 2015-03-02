@@ -14,7 +14,7 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project name="KaaVerifiersDemo" default="debug">
+<project name="VerifiersDemo" default="debug">
     <!-- sdk location -->
     <property file="../ant/sdk.properties" />
     

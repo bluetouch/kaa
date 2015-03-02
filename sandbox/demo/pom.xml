@@ -102,6 +102,14 @@
             <type>tar.gz</type>
             <scope>provided</scope>
         </dependency>
+        <dependency>
+            <groupId>org.kaaproject.kaa.examples</groupId>
+            <artifactId>verifiersdemo</artifactId>
+            <version>${project.version}</version>
+            <classifier>verifiers-android-src</classifier>
+            <type>tar.gz</type>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -225,6 +233,16 @@
                                     <overWrite>false</overWrite>
                                     <outputDirectory>${project.build.directory}/demo_projects/android</outputDirectory>
                                     <destFileName>smarthouse_demo.tar.gz</destFileName>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.kaaproject.kaa.examples</groupId>
+                                    <artifactId>verifiersdemo</artifactId>
+                                    <version>${project.version}</version>
+                                    <classifier>verifiers-android-src</classifier>
+                                    <type>tar.gz</type>
+                                    <overWrite>false</overWrite>
+                                    <outputDirectory>${project.build.directory}/demo_projects/android</outputDirectory>
+                                    <destFileName>verifiers_demo.tar.gz</destFileName>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
