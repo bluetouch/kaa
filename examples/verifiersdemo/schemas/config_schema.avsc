@@ -1,0 +1,19 @@
+{
+  "namespace": "org.kaaproject.kaa.demo.verifiersdemo",
+  "type": "record",
+  "name": "KaaVerifiersTokens",
+  "fields": [
+    {
+      "name": "twitterKaaVerifierToken",
+      "type": "string"
+    },
+    {
+      "name": "facebookKaaVerifierToken",
+      "type": "string"
+    },
+    {
+      "name": "googleKaaVerifierToken",
+      "type": "string"
+    }
+  ]
+}

@@ -40,6 +40,7 @@
                 <configuration>
                     <descriptors>
                         <descriptor>${project.basedir}/assembly/src.xml</descriptor>
+                        <descriptor>${project.basedir}/assembly/resources.xml</descriptor>
                     </descriptors>
                 </configuration>
                 <executions>

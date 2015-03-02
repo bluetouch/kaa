@@ -1,25 +1,21 @@
 package org.kaaproject.kaa.sandbox.demo;
 
-import org.kaaproject.kaa.common.dto.ApplicationDto;
+import org.kaaproject.kaa.common.dto.*;
 import org.kaaproject.kaa.common.dto.admin.SdkPlatform;
 import org.kaaproject.kaa.common.dto.user.UserVerifierDto;
 import org.kaaproject.kaa.sandbox.demo.projects.Platform;
 import org.kaaproject.kaa.sandbox.demo.projects.Project;
 import org.kaaproject.kaa.server.common.admin.AdminClient;
-import org.kaaproject.kaa.server.common.core.algorithms.generation.DefaultRecordGenerationAlgorithm;
-import org.kaaproject.kaa.server.common.core.algorithms.generation.DefaultRecordGenerationAlgorithmImpl;
-import org.kaaproject.kaa.server.common.core.configuration.RawData;
-import org.kaaproject.kaa.server.common.core.configuration.RawDataFactory;
-import org.kaaproject.kaa.server.common.core.schema.RawSchema;
 import org.kaaproject.kaa.server.verifiers.facebook.config.FacebookVerifierConfig;
 import org.kaaproject.kaa.server.verifiers.facebook.config.gen.FacebookAvroConfig;
 import org.kaaproject.kaa.server.verifiers.gplus.config.GplusVerifierConfig;
 import org.kaaproject.kaa.server.verifiers.gplus.config.gen.GplusAvroConfig;
-import org.kaaproject.kaa.server.verifiers.trustful.config.TrustfulVerifierConfig;
 import org.kaaproject.kaa.server.verifiers.twitter.config.TwitterVerifierConfig;
 import org.kaaproject.kaa.server.verifiers.twitter.config.gen.TwitterAvroConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 public class VerifiersDemoBuilder extends AbstractDemoBuilder {
     private static final Logger logger = LoggerFactory.getLogger(VerifiersDemoBuilder.class);
@@ -57,6 +53,15 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
 
         loginTenantDeveloper(client);
 
+        logger.info("Creating configuration schema...");
+        ConfigurationSchemaDto configurationSchema = new ConfigurationSchemaDto();
+        configurationSchema.setApplicationId(verifiersApplication.getId());
+        configurationSchema.setName("KaaVerifiersTokens schema");
+        configurationSchema.setDescription("Configuration schema for the default Kaa verifiers tokens");
+        configurationSchema = client.createConfigurationSchema(configurationSchema, "demo/verifiers/config_schema.avsc");
+        sdkKey.setConfigurationSchemaVersion(configurationSchema.getMajorVersion());
+        logger.info("Configuration schema was created.");
+
         TwitterVerifierConfig twitterVerifierConfig = new TwitterVerifierConfig();
         UserVerifierDto twitterUserVerifier = new UserVerifierDto();
         twitterUserVerifier.setApplicationId(verifiersApplication.getId());
@@ -70,7 +75,7 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
         twitterAvroConfig.setMaxParallelConnections(MAX_PARALLEL_CONNECTIONS);
         twitterAvroConfig.setTwitterVerifyUrl(TWITTER_VERIFY_URL);
         twitterUserVerifier.setJsonConfiguration(twitterAvroConfig.toString());
-        logger.info("Twitter config: " + twitterAvroConfig.toString());
+        logger.info("Twitter config: {}", twitterAvroConfig.toString());
         twitterUserVerifier = client.editUserVerifierDto(twitterUserVerifier);
 
         FacebookVerifierConfig facebookVerifierConfig = new FacebookVerifierConfig();
@@ -85,7 +90,7 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
         facebookAvroConfig.setAppSecret(FACEBOOK_APP_SECRET);
         facebookAvroConfig.setMaxParallelConnections(MAX_PARALLEL_CONNECTIONS);
         facebookUserVerifier.setJsonConfiguration(facebookAvroConfig.toString());
-        logger.info("Facebook config: " + facebookAvroConfig.toString());
+        logger.info("Facebook config: {} ", facebookAvroConfig.toString());
         facebookUserVerifier = client.editUserVerifierDto(facebookUserVerifier);
 
         GplusVerifierConfig gplusVerifierConfig = new GplusVerifierConfig();
@@ -100,11 +105,39 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
         gplusAvroConfig.setKeepAliveTimeMilliseconds(KEEP_ALIVE_MILLISECONDS);
         gplusAvroConfig.setMinParallelConnections(MIN_PARALLEL_CONNECTIONS);
         gplusUserVerifier.setJsonConfiguration(gplusAvroConfig.toString());
-        logger.info("Google+ config: " + facebookAvroConfig.toString());
+        logger.info("Google+ config: {} ", facebookAvroConfig.toString());
         gplusUserVerifier = client.editUserVerifierDto(gplusUserVerifier);
 
-        sdkKey.setDefaultVerifierToken(twitterUserVerifier.getVerifierToken());
+        logger.info("Getting endpoint group...");
+        EndpointGroupDto baseEndpointGroup = null;
+        List<EndpointGroupDto> endpointGroups = client.getEndpointGroups(verifiersApplication.getId());
+        if (endpointGroups.size() == 1 && endpointGroups.get(0).getWeight() == 0) {
+            baseEndpointGroup = endpointGroups.get(0);
+        }
+        if (baseEndpointGroup == null) {
+            logger.debug("Can't get default endpoint group for verifiers demo application!");
+            throw new RuntimeException("Can't get default endpoint group for verifiers demo application!");
+        }
 
+        logger.info("Creating base configuration...");
+        ConfigurationDto baseConfiguration = new ConfigurationDto();
+        baseConfiguration.setApplicationId(verifiersApplication.getId());
+        baseConfiguration.setEndpointGroupId(baseEndpointGroup.getId());
+        baseConfiguration.setSchemaId(configurationSchema.getId());
+        baseConfiguration.setMajorVersion(configurationSchema.getMajorVersion());
+        baseConfiguration.setMinorVersion(configurationSchema.getMinorVersion());
+        baseConfiguration.setDescription("Base verifiers demo configuration");
+        baseConfiguration.setStatus(UpdateStatus.INACTIVE);
+        baseConfiguration.setLastModifyTime(System.currentTimeMillis());
+        String body = generateBody(twitterUserVerifier.getVerifierToken(),
+                facebookUserVerifier.getVerifierToken(), gplusUserVerifier.getVerifierToken());
+        baseConfiguration.setBody(body);
+        logger.info("Configuration body: {}", body);
+        logger.info("Base configuration: {}", baseConfiguration.toString());
+        baseConfiguration = client.editConfiguration(baseConfiguration);
+        logger.info("Base configuration was created");
+        client.activateConfiguration(baseConfiguration.getId());
+        logger.info("Base configuration was activated");
         logger.info("Finished loading 'Verifiers Demo Application' data.");
     }
 
@@ -120,5 +153,14 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
         projectConfig.setSdkLibDir("verifiers_demo/VerifiersDemo/libs");
         projectConfig.setDestBinaryFile("verifiers_demo/VerifiersDemo/bin/VerifiersDemo-debug.apk");
         projectConfigs.add(projectConfig);
+    }
+
+    private String generateBody(String twitterVerifierToken, String facebookVerifierToken, String gplusVerifierToken) {
+        return "{" +
+                "  \"twitterKaaVerifierToken\":\"" + twitterVerifierToken + "\"," +
+                "  \"facebookKaaVerifierToken\":\"" + facebookVerifierToken + "\"," +
+                "  \"googleKaaVerifierToken\":\"" + gplusVerifierToken + "\"," +
+                "  \"__uuid\": null" +
+                "}";
     }
 }
