@@ -127,17 +127,18 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
         baseConfiguration.setMajorVersion(configurationSchema.getMajorVersion());
         baseConfiguration.setMinorVersion(configurationSchema.getMinorVersion());
         baseConfiguration.setDescription("Base verifiers demo configuration");
-        baseConfiguration.setStatus(UpdateStatus.INACTIVE);
-        baseConfiguration.setLastModifyTime(System.currentTimeMillis());
         String body = generateBody(twitterUserVerifier.getVerifierToken(),
                 facebookUserVerifier.getVerifierToken(), gplusUserVerifier.getVerifierToken());
         baseConfiguration.setBody(body);
+        baseConfiguration.setStatus(UpdateStatus.INACTIVE);
+
         logger.info("Configuration body: {}", body);
         logger.info("Base configuration: {}", baseConfiguration.toString());
         baseConfiguration = client.editConfiguration(baseConfiguration);
-        logger.info("Base configuration was created");
+        logger.info("Base configuration was created: {}", baseConfiguration.toString());
+        logger.info("Activating base configuration for [{}] id...", baseConfiguration.getId());
         client.activateConfiguration(baseConfiguration.getId());
-        logger.info("Base configuration was activated");
+        logger.info("Base configuration was activated: {}", baseConfiguration.toString());
         logger.info("Finished loading 'Verifiers Demo Application' data.");
     }
 
@@ -156,11 +157,18 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
     }
 
     private String generateBody(String twitterVerifierToken, String facebookVerifierToken, String gplusVerifierToken) {
-        return "{" +
-                "  \"twitterKaaVerifierToken\":\"" + twitterVerifierToken + "\"," +
-                "  \"facebookKaaVerifierToken\":\"" + facebookVerifierToken + "\"," +
-                "  \"googleKaaVerifierToken\":\"" + gplusVerifierToken + "\"," +
-                "  \"__uuid\": null" +
+        logger.info("Generating body... twitterVerifierToken: {}", twitterVerifierToken);
+
+        return "{\n" +
+                "  \"twitterKaaVerifierToken\" : {\n" +
+                "    \"string\" : \"" + twitterVerifierToken + "\"\n" +
+                "  },\n" +
+                "  \"facebookKaaVerifierToken\" : {\n" +
+                "    \"string\" : \"" + facebookVerifierToken + "\"\n" +
+                "  },\n" +
+                "  \"googleKaaVerifierToken\" : {\n" +
+                "    \"string\" : \"" + gplusVerifierToken + "\"\n" +
+                "  }\n" +
                 "}";
     }
 }

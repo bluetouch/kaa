@@ -1,19 +1,18 @@
 {
-  "namespace": "org.kaaproject.kaa.demo.verifiersdemo",
-  "type": "record",
-  "name": "KaaVerifiersTokens",
-  "fields": [
-    {
-      "name": "twitterKaaVerifierToken",
-      "type": "string"
-    },
-    {
-      "name": "facebookKaaVerifierToken",
-      "type": "string"
-    },
-    {
-      "name": "googleKaaVerifierToken",
-      "type": "string"
-    }
-  ]
+  "type" : "record",
+  "name" : "KaaVerifiersTokens",
+  "namespace" : "org.kaaproject.kaa.demo.verifiersdemo",
+  "fields" : [ {
+    "name" : "twitterKaaVerifierToken",
+    "type" : [ "string", "null" ],
+    "maxLength" : 25
+  }, {
+    "name" : "facebookKaaVerifierToken",
+    "type" : [ "string", "null" ],
+    "maxLength" : 25
+  }, {
+    "name" : "googleKaaVerifierToken",
+    "type" : [ "string", "null" ],
+    "maxLength" : 25
+  } ]
 }
