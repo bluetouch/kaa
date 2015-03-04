@@ -4,15 +4,21 @@
   "namespace" : "org.kaaproject.kaa.demo.verifiersdemo",
   "fields" : [ {
     "name" : "twitterKaaVerifierToken",
-    "type" : [ "string", "null" ],
-    "maxLength" : 25
+    "type" : [ {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }, "null" ]
   }, {
     "name" : "facebookKaaVerifierToken",
-    "type" : [ "string", "null" ],
-    "maxLength" : 25
+    "type" : [ {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }, "null" ]
   }, {
     "name" : "googleKaaVerifierToken",
-    "type" : [ "string", "null" ],
-    "maxLength" : 25
+    "type" : [ {
+      "type" : "string",
+      "avro.java.string" : "String"
+    }, "null" ]
   } ]
 }

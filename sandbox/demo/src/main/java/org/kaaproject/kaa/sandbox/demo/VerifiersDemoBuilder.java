@@ -168,7 +168,8 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
                 "  },\n" +
                 "  \"googleKaaVerifierToken\" : {\n" +
                 "    \"string\" : \"" + gplusVerifierToken + "\"\n" +
-                "  }\n" +
+                "  },\n" +
+                " \"__uuid\": null" +
                 "}";
     }
 }
