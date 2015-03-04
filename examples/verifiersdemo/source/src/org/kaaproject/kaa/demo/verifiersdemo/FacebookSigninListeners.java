@@ -25,17 +25,18 @@ import com.facebook.widget.LoginButton;
 
 public class FacebookSigninListeners implements LoginButton.UserInfoChangedCallback, Session.StatusCallback {
     private LoginsActivity parentActivity;
-    private static final String TAG = "MY-Facebook";
+    private static final String TAG = "Example-Facebook";
     private boolean isClicked;
 
     public FacebookSigninListeners(LoginsActivity parentActivity) {
         this.parentActivity = parentActivity;
     }
 
-    // is called after call()
+    // Is called after call()
     @Override
     public void onUserInfoFetched(GraphUser user) {
         if (user != null && isClicked) {
+            // get user's access token, id and user name
             String accessToken = Session.getActiveSession().getAccessToken();
             String userId = user.getId();
             String userName = user.getFirstName();
@@ -45,6 +46,9 @@ public class FacebookSigninListeners implements LoginButton.UserInfoChangedCallb
             Log.i(TAG, "User name: " + user.getFirstName());
 
             parentActivity.updateUI(userName, userId, accessToken, LoginsActivity.AccountType.FACEBOOK);
+
+            // Disconnect user from Facebook (to make Log out button disappear)
+            Session.getActiveSession().closeAndClearTokenInformation();
         }
 
         isClicked = false;

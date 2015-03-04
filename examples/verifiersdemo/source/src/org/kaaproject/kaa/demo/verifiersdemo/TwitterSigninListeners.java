@@ -16,11 +16,9 @@
 
 package org.kaaproject.kaa.demo.verifiersdemo;
 
-import android.app.Activity;
 import android.util.Log;
 import android.view.View;
 
-import com.facebook.Session;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -28,14 +26,14 @@ import com.twitter.sdk.android.core.TwitterSession;
 
 public class TwitterSigninListeners extends Callback<TwitterSession> implements View.OnClickListener {
     private LoginsActivity parentActivity;
-    private static String TAG = "MY-Twitter";
+    private static String TAG = "Example-Twitter";
     private boolean isClicked;
 
     public TwitterSigninListeners(LoginsActivity parentActivity) {
         this.parentActivity = parentActivity;
     }
 
-    // is called after onClick()
+    // Is called after onClick()
     @Override
     public void success(Result<TwitterSession> twitterSessionResult) {
         Log.i(TAG, twitterSessionResult.toString());
@@ -44,7 +42,7 @@ public class TwitterSigninListeners extends Callback<TwitterSession> implements 
                     twitterSessionResult.data.getAuthToken().secret;
             String userId = String.valueOf(twitterSessionResult.data.getUserId());
             String userName = twitterSessionResult.data.getUserName();
-            
+
             Log.i(TAG, "Token: " +  accessToken);
             Log.i(TAG, "User id: " + userId);
             Log.i(TAG, "User name: " + userName);
