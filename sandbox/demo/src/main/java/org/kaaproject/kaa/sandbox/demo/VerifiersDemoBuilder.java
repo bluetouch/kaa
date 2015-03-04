@@ -46,7 +46,6 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
 
         sdkKey.setApplicationId(verifiersApplication.getId());
         sdkKey.setProfileSchemaVersion(1);
-        sdkKey.setConfigurationSchemaVersion(1);
         sdkKey.setNotificationSchemaVersion(1);
         sdkKey.setLogSchemaVersion(1);
         sdkKey.setTargetPlatform(SdkPlatform.ANDROID);
@@ -59,6 +58,7 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
         configurationSchema.setName("KaaVerifiersTokens schema");
         configurationSchema.setDescription("Configuration schema for the default Kaa verifiers tokens");
         configurationSchema = client.createConfigurationSchema(configurationSchema, "demo/verifiers/config_schema.avsc");
+        logger.info("Configuration schema version: {}", configurationSchema.getMajorVersion());
         sdkKey.setConfigurationSchemaVersion(configurationSchema.getMajorVersion());
         logger.info("Configuration schema was created.");
 
