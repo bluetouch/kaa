@@ -146,7 +146,7 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
     protected void setupProjectConfigs() {
         Project projectConfig = new Project();
         projectConfig.setId("verifiers_demo");
-        projectConfig.setName("Verifiers Demo");
+        projectConfig.setName("Verifiers demo");
         projectConfig.setDescription("Verifiers application on android platform demonstrating user verification system");
         projectConfig.setPlatform(Platform.ANDROID);
         projectConfig.setSourceArchive("android/verifiers_demo.tar.gz");
