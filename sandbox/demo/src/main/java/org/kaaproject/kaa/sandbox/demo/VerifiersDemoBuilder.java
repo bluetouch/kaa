@@ -138,7 +138,7 @@ public class VerifiersDemoBuilder extends AbstractDemoBuilder {
         logger.info("Base configuration was created: {}", baseConfiguration.toString());
         logger.info("Activating base configuration for [{}] id...", baseConfiguration.getId());
         client.activateConfiguration(baseConfiguration.getId());
-        logger.info("Base configuration was activated: {}", baseConfiguration.toString());
+        logger.info("Base configuration was activated");
         logger.info("Finished loading 'Verifiers Demo Application' data.");
     }
 
