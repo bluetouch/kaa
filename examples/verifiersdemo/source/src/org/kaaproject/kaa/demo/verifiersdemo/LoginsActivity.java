@@ -216,17 +216,20 @@ public class LoginsActivity extends FragmentActivity {
                 kaaVerifierToken = verifiersTokens.getGoogleKaaVerifierToken();
                 // Log out from Facebook (to make Log out button disappear)
                 Session.getActiveSession().closeAndClearTokenInformation();
-                userName = "Hi to " + userName + " from Google";
+                userName = "Google user name: " + userName;
+                userId = "Google user id: " + userId;
                 break;
             case FACEBOOK:
                 kaaVerifierToken = verifiersTokens.getFacebookKaaVerifierToken();
-                userName = "Hi to " + userName + " from Facebook";
+                userName = "Facebook user name: " + userName;
+                userId = "Facebook user id: " + userId;
                 break;
             case TWITTER:
                 kaaVerifierToken = verifiersTokens.getTwitterKaaVerifierToken();
                 // Log out from Facebook (to make Log out button disappear)
                 Session.getActiveSession().closeAndClearTokenInformation();
-                userName = "Hi to " + userName + " from Twitter";
+                userName = "Twitter user name: " + userName;
+                userId = "Twitter user id: " + userId;
                 break;
             default:
                 break;
@@ -251,8 +254,11 @@ public class LoginsActivity extends FragmentActivity {
                             curUserInfo = "Successful Kaa verification";
                             updateTextViews();
                         } else {
-                            Log.i(TAG, "Kaa verification failure: " + userAttachResponse.getErrorCode());
-                            curUserInfo = "Kaa verification failure: " + userAttachResponse.getErrorCode();
+                            String failureString = userAttachResponse.getErrorReason() == null ?
+                                    userAttachResponse.getErrorCode().toString() :
+                                    userAttachResponse.getErrorReason().toString();
+                            Log.i(TAG, "Kaa verification failure: " + failureString);
+                            curUserInfo = "Kaa verification failure: " + failureString;
                             updateTextViews();
                         }
                     }
